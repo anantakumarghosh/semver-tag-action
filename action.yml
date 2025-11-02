@@ -45,7 +45,7 @@ runs:
       shell: bash
       env:
         VERSION_LEVEL: ${{ inputs.version-level }}
-        # CURRENT_VERSION: ${{ inputs.current-version }}
+        CURRENT_VERSION: ${{ inputs.current-version }}
         TAG_PREFIX: ${{ inputs.tag-prefix }}
       run: bash ${{ github.action_path }}/scripts/calculate-version.sh
 
