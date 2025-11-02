@@ -1,0 +1,32 @@
+name: Test Action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Test patch bump
+        id: patch
+        uses: ./
+        with:
+          version-level: patch
+          push: false
+
+      - name: Verify outputs
+        run: |
+          echo "Version: ${{ steps.patch.outputs.new-version }}"
+          echo "Tag: ${{ steps.patch.outputs.tag-name }}"
+          if [ "${{ steps.patch.outputs.is-prerelease }}" != "false" ]; then
+            echo "❌ Patch should not be pre-release"
+            exit 1
+          fi
+          echo "✅ Test passed"

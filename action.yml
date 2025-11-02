@@ -1,0 +1,58 @@
+name: 'Semantic Version Tag'
+description: 'Create semantic version tags with automatic pre-release detection'
+author: 'Ananta Kumar Ghosh'
+
+branding:
+  icon: 'tag'
+  color: 'blue'
+
+inputs:
+  version-level:
+    description: 'Version bump level (major, minor, patch, alpha, beta, rc, dev)'
+    required: true
+  current-version:
+    description: 'Current version (auto-detected from git tags if not provided)'
+    required: false
+  tag-prefix:
+    description: 'Prefix for version tags'
+    required: false
+    default: 'v'
+  push:
+    description: 'Push the tag to remote'
+    required: false
+    default: 'true'
+  token:
+    description: 'GitHub token for pushing tags'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  new-version:
+    description: 'The new version that was created'
+    value: ${{ steps.bump.outputs.version }}
+  is-prerelease:
+    description: 'Whether this is a pre-release version'
+    value: ${{ steps.bump.outputs.is_prerelease }}
+  tag-name:
+    description: 'Full tag name with prefix'
+    value: ${{ steps.bump.outputs.tag_name }}
+
+runs:
+  using: composite
+  steps:
+    - name: Calculate next version
+      id: bump
+      shell: bash
+      env:
+        VERSION_LEVEL: ${{ inputs.version-level }}
+        CURRENT_VERSION: ${{ inputs.current-version }}
+        TAG_PREFIX: ${{ inputs.tag-prefix }}
+      run: bash ${{ github.action_path }}/scripts/calculate-version.sh
+
+    - name: Create and push tag
+      shell: bash
+      env:
+        TAG_NAME: ${{ steps.bump.outputs.tag_name }}
+        PUSH: ${{ inputs.push }}
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: bash ${{ github.action_path }}/scripts/create-tag.sh
