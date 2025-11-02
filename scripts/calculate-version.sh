@@ -5,6 +5,7 @@
 if [ -n "$CURRENT_VERSION" ]; then
   current="$CURRENT_VERSION"
 else
+  git fetch --tags
   current=$(git describe --tags --abbrev=0 2>/dev/null || echo "${TAG_PREFIX}0.0.0")
 fi
 
