@@ -30,6 +30,7 @@ Automatically create semantic version tags with intelligent pre-release detectio
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
 | `version-level` | Version bump level | ✅ Yes | - |
+| `specific-version` | Create specific version tag | ❌ No | - |
 | `current-version` | Current version | ❌ No | Auto-detect |
 | `tag-prefix` | Prefix for version tags | ❌ No | `v` |
 | `push` | Push the tag to remote | ❌ No | `true` |
