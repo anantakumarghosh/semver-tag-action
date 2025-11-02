@@ -10,6 +10,9 @@ inputs:
   version-level:
     description: 'Version bump level (major, minor, patch, alpha, beta, rc, dev)'
     required: true
+  specific-version:
+    description: 'Manually specify an exact version (e.g., 2.5.0 or 1.3.0-beta.2). Skips version bumping.'
+    required: false
   current-version:
     description: 'Current version (auto-detected from git tags if not provided)'
     required: false
@@ -40,8 +43,11 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Calculate next version
+
+  # Only run this step if no specific version is provided
+    - name: Determine version
       id: bump
+      if: ${{ !inputs.specific-version }}
       shell: bash
       env:
         VERSION_LEVEL: ${{ inputs.version-level }}
@@ -49,10 +55,11 @@ runs:
         TAG_PREFIX: ${{ inputs.tag-prefix }}
       run: bash ${{ github.action_path }}/scripts/calculate-version.sh
 
+    # Create and push tag
     - name: Create and push tag
       shell: bash
       env:
-        TAG_NAME: ${{ steps.bump.outputs.tag_name }}
+        TAG_NAME: ${{ steps.bump.outputs.tag_name || format('{0}{1}', inputs.tag-prefix, inputs.specific-version) }}
         PUSH: ${{ inputs.push }}
         GITHUB_TOKEN: ${{ inputs.token }}
       run: bash ${{ github.action_path }}/scripts/create-tag.sh
