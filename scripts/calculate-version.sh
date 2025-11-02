@@ -8,6 +8,13 @@ else
   current=$(git describe --tags --abbrev=0 2>/dev/null || echo "${TAG_PREFIX}0.0.0")
 fi
 
+# Fallback if still empty or invalid
+if [[ -z "$current" || "$current" == "${TAG_PREFIX}" ]]; then
+  echo "⚠️  No valid current version found, defaulting to ${TAG_PREFIX}0.0.0"
+  current="${TAG_PREFIX}0.0.0"
+fi
+
+
 # Remove prefix
 current=${current#"$TAG_PREFIX"}
 
