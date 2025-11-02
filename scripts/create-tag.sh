@@ -2,8 +2,13 @@
 set -e
 
 # Configure git
-git config user.name "github-actions[bot]"
-git config user.email "github-actions[bot]@users.noreply.github.com"
+if [ -n "${GITHUB_ACTOR}" ]; then
+  git config user.name "${GITHUB_ACTOR}"
+  git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+else
+  git config user.name "github-actions[bot]"
+  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+fi
 
 # Create tag
 git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
