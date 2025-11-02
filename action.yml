@@ -61,5 +61,6 @@ runs:
       env:
         TAG_NAME: ${{ steps.bump.outputs.tag_name || format('{0}{1}', inputs.tag-prefix, inputs.specific-version) }}
         PUSH: ${{ inputs.push }}
+        GITHUB_ACTOR: ${{ github.actor }}
         GITHUB_TOKEN: ${{ inputs.token }}
       run: bash ${{ github.action_path }}/scripts/create-tag.sh
