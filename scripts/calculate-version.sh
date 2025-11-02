@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+# set -e
 
 # Get current version
 if [ -n "$CURRENT_VERSION" ]; then
